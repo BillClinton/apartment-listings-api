@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "env-cmd": "^10.0.1",
+    "jsdoc": "^3.6.3",
     "nodemon": "^1.19.2"
   },
   "dependencies": {
