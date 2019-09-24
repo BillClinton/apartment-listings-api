@@ -75,13 +75,52 @@ router.get('/users', auth, async (req, res) => {
 });
 
 /**
- * Get current user
+ * Read current user
  */
 router.get('/users/me', auth, async (req, res) => {
   try {
     res.send(req.user);
   } catch (e) {
     res.status(500).send(e);
+  }
+});
+
+/**
+ * Update user
+ */
+router.patch('/users/:id', auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['name', 'surname', 'email', 'password'];
+  const isValidOperation = updates.every(update =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send('error: invalid updates attempted');
+  }
+
+  try {
+    const user = await User.findById(req.params.id);
+
+    updates.forEach(update => (user[update] = req.body[update]));
+    await user.save();
+    res.send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+/**
+ * Delete user
+ */
+router.delete('/users/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    user.remove();
+    res.send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
   }
 });
 
