@@ -61,4 +61,15 @@ router.get('/users', auth, async (req, res) => {
   }
 });
 
+/**
+ * Get current user
+ */
+router.get('/users/me', auth, async (req, res) => {
+  try {
+    res.send(req.user);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
 module.exports = router;
