@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "env-cmd": "^10.0.1",
     "nodemon": "^1.19.2"
   },
   "dependencies": {
