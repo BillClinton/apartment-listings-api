@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: routers/user.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: routers/user.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Express router providing user related routes
+ * @module routers/user
+ * @requires express
+ * @requires module:models/user
+ */
+
+const express = require('express');
+const router = new express.Router();
+const User = require('../models/user');
+const auth = require('../middleware/auth');
+
+//* @memberof module:routers/user~userRouter
+
+/**
+ * Route that accepts user logins.
+ * @name GET users/login
+ * @member
+ * @instance
+ * @method
+ * @param {string} email - User email address
+ * @param {string} password - User password.
+ */
+router.post('/users/login', async (req, res) => {
+  try {
+    const user = await User.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
+    const token = await user.generateAuthToken();
+    res.send({ user, token });
+  } catch (e) {
+    res.status(400).send();
+  }
+});
+
+/**
+ * Route that logs out current user.
+ * @name POST users/logout
+ * @member
+ * @instance
+ * @method
+ */
+router.post('/users/logout', auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter(token => {
+      return token.token != req.token;
+    });
+    await req.user.save();
+    res.send();
+  } catch (e) {
+    res.status(400).send();
+  }
+});
+
+/**
+ * Route that logs out current user and destroys all user sessions.
+ * @name POST users/logoutAll
+ * @member
+ * @instance
+ * @method
+ */
+router.post('/users/logoutAll', auth, async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+    res.send();
+  } catch (e) {
+    res.status(400).send();
+  }
+});
+
+/**
+ * Route that accepts and creates a user.
+ * @name POST /users
+ * @member
+ * @instance
+ * @method
+ * @param {Object} user - JSON Object representing new user to be created
+ */
+router.post('/users', async (req, res) => {
+  const user = new User(req.body);
+
+  try {
+    await user.save();
+
+    res.status(201).send({ user });
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+/**
+ * Route that returns all users.
+ * @name GET /users
+ * @member
+ * @instance
+ * @method
+ * @returns {Array} users
+ */
+router.get('/users', auth, async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
+/**
+ * Route that returns the current user.
+ * @name GET /users/me
+ * @member
+ * @instance
+ * @method
+ * @returns {Object} user
+ */
+router.get('/users/me', auth, async (req, res) => {
+  try {
+    res.send(req.user);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
+/**
+ * Route that updates a user.
+ * @name PATCH users/:id
+ * @member
+ * @instance
+ * @method
+ * @param {string} id - The user id.
+ * @param {Object} updates - JSON Object representing updates to the user
+ */
+router.patch('/users/:id', auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['name', 'surname', 'email', 'password'];
+  const isValidOperation = updates.every(update =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send('error: invalid updates attempted');
+  }
+
+  try {
+    const user = await User.findById(req.params.id);
+
+    updates.forEach(update => (user[update] = req.body[update]));
+    await user.save();
+    res.send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+/**
+ * Route that deletes a user.
+ * @name DELETE users/:id
+ * @member
+ * @instance
+ * @method
+ * @param {string} id - The user id.
+ */
+router.delete('/users/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    user.remove();
+    res.send(user);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+module.exports = router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-models_user.html">models/user</a></li><li><a href="module-routers_user.html">routers/user</a></li></ul><h3>Classes</h3><ul><li><a href="module-models_user-userSchema.html">userSchema</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Sep 24 2019 20:47:51 GMT-0500 (GMT-05:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
