@@ -1,5 +1,129 @@
 define({ "api": [
   {
+    "type": "post",
+    "url": "/users",
+    "title": "Create User",
+    "name": "CreateUser",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "JSON",
+            "optional": false,
+            "field": "body",
+            "description": "<p>User object.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"name\": \"Nick\",\n  \"surname\": \"Foles\",\n  \"email\": \"nfoles9@gmail.com\",\n  \"password\": \"eagles4133\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "user",
+            "description": "<p>User profile information</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"name\": \"Nick\",\n  \"surname\": \"Foles\",\n  \"email\": \"nfoles9@gmail.com\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/routers/user.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "delete",
+    "url": "/users/:id",
+    "title": "Delete User",
+    "name": "DeleteUser",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Users unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "user",
+            "description": "<p>User profile information</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"name\": \"John\",\n  \"surname\": \"Doe\",\n  \"email\": \"johndoe@email.com\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"error\": \"Bad Request.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/routers/user.js",
+    "groupTitle": "User"
+  },
+  {
     "type": "get",
     "url": "/user/me",
     "title": "Request Current User",
@@ -148,6 +272,74 @@ define({ "api": [
         "Error 4xx": [
           {
             "group": "Error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/routers/user.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/users/logoutAll",
+    "title": "Logout All Sessions",
+    "name": "LogoutAllUserSessions",
+    "group": "User",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "200",
+            "description": "<p>OK</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "error 4xx": [
+          {
+            "group": "error 4xx",
+            "optional": false,
+            "field": "400",
+            "description": "<p>Bad Request</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/routers/user.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/users/logout",
+    "title": "Logout",
+    "name": "LogoutUser",
+    "group": "User",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "200",
+            "description": "<p>OK</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "error 4xx": [
+          {
+            "group": "error 4xx",
             "optional": false,
             "field": "400",
             "description": "<p>Bad Request</p>"

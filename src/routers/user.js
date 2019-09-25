@@ -29,7 +29,6 @@ const auth = require('../middleware/auth');
  *     }
  *
  * @apiError (Error 4xx) 400 Bad Request
- *
  */
 router.post('/users/login', async (req, res) => {
   try {
@@ -45,11 +44,13 @@ router.post('/users/login', async (req, res) => {
 });
 
 /**
- * Route that logs out current user.
- * @name POST users/logout
- * @member
- * @instance
- * @method
+ * @api {post} /users/logout Logout
+ * @apiname LogoutUser
+ * @apigroup User
+ *
+ * @apisuccess 200 OK
+ *
+ * @apierror (error 4xx) 400 Bad Request
  */
 router.post('/users/logout', auth, async (req, res) => {
   try {
@@ -64,11 +65,13 @@ router.post('/users/logout', auth, async (req, res) => {
 });
 
 /**
- * Route that logs out current user and destroys all user sessions.
- * @name POST users/logoutAll
- * @member
- * @instance
- * @method
+ * @api {post} /users/logoutAll Logout All Sessions
+ * @apiname LogoutAllUserSessions
+ * @apigroup User
+ *
+ * @apisuccess 200 OK
+ *
+ * @apierror (error 4xx) 400 Bad Request
  */
 router.post('/users/logoutAll', auth, async (req, res) => {
   try {
@@ -81,12 +84,30 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 });
 
 /**
- * Route that accepts and creates a user.
- * @name POST /users
- * @member
- * @instance
- * @method
- * @param {Object} user - JSON Object representing new user to be created
+ * @api {post} /users Create User
+ * @apiName CreateUser
+ * @apiGroup User
+ *
+ * @apiParam {JSON} body User object.
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "name": "Nick",
+ *       "surname": "Foles",
+ *       "email": "nfoles9@gmail.com",
+ *       "password": "eagles4133"
+ *     }
+ *
+ * @apiSuccess {Object} user User profile information
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "Nick",
+ *       "surname": "Foles",
+ *       "email": "nfoles9@gmail.com",
+ *     }
+ *
+ * @apiError (Error 4xx) 400 Bad Request
  */
 router.post('/users', async (req, res) => {
   const user = new User(req.body);
@@ -226,6 +247,31 @@ router.patch('/users/:id', auth, async (req, res) => {
  * @instance
  * @method
  * @param {string} id - The user id.
+ */
+/**
+ * @api {delete} /users/:id Delete User
+ * @apiName DeleteUser
+ * @apiGroup User
+ *
+ * @apiParam {String} id Users unique ID.
+ *
+ * @apiSuccess {Object} user User profile information
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "John",
+ *       "surname": "Doe",
+ *       "email": "johndoe@email.com"
+ *     }
+ *
+ * @apiError (Error 4xx) 400 Bad Request
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "error": "Bad Request."
+ *     }
  */
 router.delete('/users/:id', auth, async (req, res) => {
   try {
