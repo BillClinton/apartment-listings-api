@@ -6,7 +6,7 @@
   "scripts": {
     "run": "node src/index.js",
     "dev": "env-cmd -f ./dev.env nodemon src/index.js",
-    "doc": "./node_modules/.bin/jsdoc -r ./src -d ./docs -c ./jsdoc-config.json"
+    "doc": "apidoc -i src/ -o apidoc/"
   },
   "author": "",
   "license": "ISC",
