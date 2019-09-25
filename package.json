@@ -11,9 +11,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "comment-parser": "^0.6.2",
+    "apidoc": "^0.17.7",
     "env-cmd": "^10.0.1",
-    "jsdoc": "^3.6.3",
     "nodemon": "^1.19.2"
   },
   "dependencies": {
