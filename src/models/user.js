@@ -1,20 +1,41 @@
+/**
+ * User model
+ * @module models/user
+ * @requires mongoose
+ * @requires validator
+ * @requires jsonwebtoken
+ * @requires bcryptjs
+ */
+
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+/**
+ * @constructor
+ */
 const userSchema = new mongoose.Schema(
   {
+    /**
+     * First name of the user.
+     */
     name: {
       type: String,
       required: true,
       trim: true
     },
+    /**
+     * Last name of the user.
+     */
     surname: {
       type: String,
       required: true,
       trim: true
     },
+    /**
+     * The user's password.
+     */
     password: {
       type: String,
       required: true,
@@ -26,6 +47,9 @@ const userSchema = new mongoose.Schema(
         }
       }
     },
+    /**
+     * The user's email address.
+     */
     email: {
       type: String,
       required: true,
@@ -55,6 +79,13 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+/**
+ * Generates an authentication token.
+ * @memberof module:models/user
+ * @instance
+ * @method
+ * @returns {String} token The jsonwebtoken
+ */
 userSchema.methods.generateAuthToken = async function() {
   const user = this;
   const token = jwt.sign(
@@ -68,6 +99,10 @@ userSchema.methods.generateAuthToken = async function() {
   return token;
 };
 
+/**
+ * Deletes sensitive data from user before converting to JSON.
+ * @returns {Object} user The user JSON object
+ */
 userSchema.methods.toJSON = function() {
   const user = this;
   const userObject = user.toObject();
@@ -78,6 +113,12 @@ userSchema.methods.toJSON = function() {
   return userObject;
 };
 
+/**
+ * Find a user based on email and password.
+ * @param {string} email The user's email address
+ * @param {string} password The user's password
+ * @returns {Object} user The user JSON object
+ */
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
 
