@@ -138,7 +138,7 @@ router.get('/apartments/:id', auth, async (req, res) => {
     const apartment = await Apartment.findById(req.params.id);
 
     if (!apartment) {
-      res.status(404).send();
+      return res.status(404).send();
     }
     res.send(apartment);
   } catch (e) {
@@ -156,7 +156,7 @@ router.get('/apartments/:id', auth, async (req, res) => {
  * @apiParamExample {json} Request-Example:
  *     {
  *        "rent": 2300,
- *        "available": "December",
+ *        "available": "December"
  *     }
  *
  * @apiSuccess {Object} apartment Apartment profile information
@@ -178,6 +178,7 @@ router.get('/apartments/:id', auth, async (req, res) => {
  *     }
  *
  * @apiError (Error 4xx) 400 Invalid Updates Attempted
+ * @apiError (Error 4xx) 404 Not Found
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 400 Bad Request
@@ -206,6 +207,10 @@ router.patch('/apartments/:id', auth, async (req, res) => {
 
   try {
     const apartment = await Apartment.findById(req.params.id);
+
+    if (!apartment) {
+      return res.status(404).send();
+    }
 
     updates.forEach(update => (apartment[update] = req.body[update]));
     await apartment.save();
@@ -241,6 +246,7 @@ router.patch('/apartments/:id', auth, async (req, res) => {
  *     }
  *
  * @apiError (Error 4xx) 400 Bad Request
+ * @apiError (Error 4xx) 404 Not Found
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 400 Bad Request
@@ -251,6 +257,10 @@ router.patch('/apartments/:id', auth, async (req, res) => {
 router.delete('/apartments/:id', auth, async (req, res) => {
   try {
     const apartment = await Apartment.findById(req.params.id);
+
+    if (!apartment) {
+      return res.status(404).send();
+    }
 
     apartment.remove();
     res.send(apartment);
