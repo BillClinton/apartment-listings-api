@@ -241,14 +241,6 @@ router.patch('/users/:id', auth, async (req, res) => {
 });
 
 /**
- * Route that deletes a user.
- * @name DELETE users/:id
- * @member
- * @instance
- * @method
- * @param {string} id - The user id.
- */
-/**
  * @api {delete} /users/:id Delete User
  * @apiName DeleteUser
  * @apiGroup User
