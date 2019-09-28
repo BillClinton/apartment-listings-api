@@ -132,8 +132,6 @@ router.get('/apartments', auth, async (req, res) => {
  *
  * @apiError (Error 4xx) 404 Not Found
  *
- * @apiError (Error 5xx) 500 Internal Server Error
- *
  */
 router.get('/apartments/:id', auth, async (req, res) => {
   try {
@@ -142,6 +140,119 @@ router.get('/apartments/:id', auth, async (req, res) => {
     if (!apartment) {
       res.status(404).send();
     }
+    res.send(apartment);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+/**
+ * @api {patch} /apartments/:id Update Apartment
+ * @apiName UpdateApartment
+ * @apiGroup Apartment
+ *
+ * @apiParam {String} id Apartments unique ID.
+ * @apiParam {JSON} body Updates to be applied to apartment.
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *        "rent": 2300,
+ *        "available": "December",
+ *     }
+ *
+ * @apiSuccess {Object} apartment Apartment profile information
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "_id": "5d8fcfac47867a038e8f87fe",
+ *        "name":"Large Rehabbed 3 Bedroom House in Northern Liberties",
+ *        "address": "944 N American St, Philadelphia Pa, 19130",
+ *        "rent": 2300,
+ *        "bedrooms": 3,
+ *        "bathrooms": 2,
+ *        "contact": "267-123-4567",
+ *        "available": "December",
+ *        "createdAt": "2019-09-28T21:25:00.695Z",
+ *        "updatedAt": "2019-09-28T21:45:00.695Z",
+ *        "__v": 0
+ *     }
+ *
+ * @apiError (Error 4xx) 400 Invalid Updates Attempted
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "error": "Invalid updates attempted."
+ *     }
+ */
+router.patch('/apartments/:id', auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = [
+    'name',
+    'address',
+    'rent',
+    'bedrooms',
+    'bathrooms',
+    'contact',
+    'available'
+  ];
+  const isValidOperation = updates.every(update =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid updates attempted.' });
+  }
+
+  try {
+    const apartment = await Apartment.findById(req.params.id);
+
+    updates.forEach(update => (apartment[update] = req.body[update]));
+    await apartment.save();
+    res.send(apartment);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+/**
+ * @api {delete} /apartments/:id Delete Apartment
+ * @apiName DeleteApartment
+ * @apiGroup Apartment
+ *
+ * @apiParam {String} id Apartments unique ID.
+ *
+ * @apiSuccess {Object} apartment Apartment information
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *        "_id": "5d8fcfac47867a038e8f87fe",
+ *        "name":"Large Rehabbed 3 Bedroom House in Northern Liberties",
+ *        "address": "944 N American St, Philadelphia Pa, 19130",
+ *        "rent": 2300,
+ *        "bedrooms": 3,
+ *        "bathrooms": 2,
+ *        "contact": "267-123-4567",
+ *        "available": "December",
+ *        "createdAt": "2019-09-28T21:25:00.695Z",
+ *        "updatedAt": "2019-09-28T21:45:00.695Z",
+ *        "__v": 0
+ *     }
+ *
+ * @apiError (Error 4xx) 400 Bad Request
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "error": "Bad Request."
+ *     }
+ */
+router.delete('/apartments/:id', auth, async (req, res) => {
+  try {
+    const apartment = await Apartment.findById(req.params.id);
+
+    apartment.remove();
     res.send(apartment);
   } catch (e) {
     res.status(400).send({ error: e.message });
