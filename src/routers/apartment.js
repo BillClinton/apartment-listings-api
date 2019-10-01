@@ -5,8 +5,7 @@ const express = require('express');
 const router = new express.Router();
 const auth = require('../middleware/auth');
 const Apartment = require('../models/apartment');
-
-module.exports = router;
+const { imageUpload, uploadFiles } = require('../utils/aws-s3-upload.js');
 
 /**
  * @api {post} /apartments Create Apartment
@@ -268,3 +267,35 @@ router.delete('/apartments/:id', auth, async (req, res) => {
     res.status(400).send({ error: e.message });
   }
 });
+
+/**
+ * Upload Image
+ */
+router.post(
+  '/apartments/:id/images',
+  auth,
+  imageUpload.array('upload'),
+  async (req, res) => {
+    const apartment = await Apartment.findById(req.params.id);
+
+    if (!apartment) {
+      return res.status(404).send();
+    }
+
+    const images = await uploadFiles(req.files);
+    images.forEach(image => {
+      apartment.images = apartment.images.concat({
+        filename: image.fileName,
+        url: image.location
+      });
+    });
+    await apartment.save();
+
+    res.send();
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
+module.exports = router;
