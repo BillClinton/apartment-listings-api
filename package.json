@@ -6,14 +6,20 @@
   "scripts": {
     "run": "node src/index.js",
     "dev": "env-cmd -f ./dev.env nodemon src/index.js",
-    "doc": "apidoc -i src/ -o docs/"
+    "doc": "apidoc -i src/ -o docs/",
+    "test": "env-cmd -f ./test.env jest --runInBand --watch"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "apidoc": "^0.17.7",
     "env-cmd": "^10.0.1",
-    "nodemon": "^1.19.2"
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.2",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "aws-sdk": "^2.538.0",
