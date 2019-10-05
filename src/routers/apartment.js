@@ -95,7 +95,7 @@ router.post('/apartments', auth, async (req, res) => {
  *       "error": "Error Message"
  *     }
  */
-router.get('/apartments', auth, async (req, res) => {
+router.get('/apartments', async (req, res) => {
   try {
     const apartments = await Apartment.find({});
     res.send(apartments);
@@ -132,7 +132,7 @@ router.get('/apartments', auth, async (req, res) => {
  * @apiError (Error 4xx) 404 Not Found
  *
  */
-router.get('/apartments/:id', auth, async (req, res) => {
+router.get('/apartments/:id', async (req, res) => {
   try {
     const apartment = await Apartment.findById(req.params.id);
 
