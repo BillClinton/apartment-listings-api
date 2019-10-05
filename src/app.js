@@ -6,6 +6,7 @@ const apartmentRouter = require('./routers/apartment');
 
 const app = express();
 app.use(express.json());
+
 app.use(userRouter);
 app.use(apartmentRouter);
 
