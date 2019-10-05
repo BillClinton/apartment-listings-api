@@ -194,7 +194,8 @@ router.patch('/apartments/:id', auth, async (req, res) => {
     'bedrooms',
     'bathrooms',
     'contact',
-    'available'
+    'available',
+    'active'
   ];
   const isValidOperation = updates.every(update =>
     allowedUpdates.includes(update)

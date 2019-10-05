@@ -35,6 +35,10 @@ const apartmentSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
+    active: {
+      type: Boolean,
+      default: true
+    },
     images: [
       {
         filename: {
