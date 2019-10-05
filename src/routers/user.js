@@ -109,7 +109,7 @@ router.post('/users/logoutAll', auth, async (req, res) => {
  *
  * @apiError (Error 4xx) 400 Bad Request
  */
-router.post('/users', async (req, res) => {
+router.post('/users', auth, async (req, res) => {
   const user = new User(req.body);
 
   try {
@@ -159,7 +159,7 @@ router.get('/users', auth, async (req, res) => {
 
 /**
  * @api {get} /user/me Request Current User
- * @apiName GetProfile
+ * @apiName GetCurrentProfile
  * @apiGroup User
  *
  * @apiSuccess {Object} user User profile information
@@ -183,6 +183,44 @@ router.get('/users', auth, async (req, res) => {
 router.get('/users/me', auth, async (req, res) => {
   try {
     res.send(req.user);
+  } catch (e) {
+    res.status(500).send({ error: e.message });
+  }
+});
+
+/**
+ * @api {get} /user/:id Request User
+ * @apiName GetProfile
+ * @apiGroup User
+ *
+ * @apiSuccess {Object} user User profile information
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "John",
+ *       "surname": "Doe",
+ *       "email": "johndoe@email.com"
+ *     }
+ *
+ * @apiError (Error 4xx) 404 Not Found
+ * @apiError (Error 5xx) 500 Internal Server Error
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "error": "Error Message"
+ *     }
+ */
+router.get('/users/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).send();
+    }
+
+    res.send(user);
   } catch (e) {
     res.status(500).send({ error: e.message });
   }
