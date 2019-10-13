@@ -10,4 +10,9 @@ app.use(express.json());
 app.use(userRouter);
 app.use(apartmentRouter);
 
+// respond with 404 if root is requested
+app.get('/', function(req, res) {
+  res.send(404);
+});
+
 module.exports = app;
