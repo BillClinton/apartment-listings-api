@@ -9,7 +9,3 @@ docs
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
-
-# More Elastic Beanstalk config
-.ebignore
-.npmrc
